@@ -1,29 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine; // оставляем только UnityEngine
+using UnityEngine;
 
 public class GameInput : MonoBehaviour
 {
+    private PlayerInputActions playerInputActions;
+
+    private void Awake()
+    {
+        // создаём экземпляр Input Actions
+        playerInputActions = new PlayerInputActions();
+        playerInputActions.Player.Enable(); // включаем действия
+    }
+
+    // Получение нормализованного вектора движения
     public Vector2 GetMovementVectorNormalized()
     {
-        Vector2 inputVector = new Vector2(0, 0); // UnityEngine.Vector2
-        if (Input.GetKey(KeyCode.W))
-        {
-            inputVector.y = +1;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            inputVector.y = -1;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            inputVector.x = -1;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            inputVector.x = +1;
-        }
-        inputVector = inputVector.normalized;
-        return inputVector;
+        Vector2 inputVector = playerInputActions.Player.Move.ReadValue<Vector2>();
+        return inputVector.normalized;
+    }
+
+    private void OnDisable()
+    {
+        // отключаем Input Actions при отключении объекта
+        playerInputActions.Player.Disable();
     }
 }
